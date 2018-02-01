@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Language" content="en-gb">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Room
+  </title>
+  <style>
+    .cell-style tr td {
+      border: 1px solid #bbb;
+    }
+    .table-style {
+      border-collapse: collapse;
+      border: 1px solid #666;
+      border-color: rgb(200, 200, 200);
+    }
+    td:nth-child(1) {
+      width: 20%;
+      text-align: center;
+    }
+    td:nth-child(2) {
+      width: 20%;
+      text-align: center;
+    }
+    td:nth-child(3) {
+      width: 20%;
+      text-align: center;
+    }
+    td:nth-child(4) {
+      width: 20%;
+      text-align: center;
+    }
+    td:nth-child(5) {
+      width: 20%;
+      text-align: center;
+    }
+    .input-style tr td input {
+      text-align: center;
+      border-style: none;
+    }
+    .dropdown-style tr td select {
+      text-align: center;
+      border-style: none;
+      width: 99%;
+    }
+    .thead-style tr th {
+      border: 1px solid #bbb;
+      background-color: rgb(220, 220, 220);
+      font-weight: normal;
+    }
+    .row-selected td,  .row-selected td input,  .row-selected td select {
+      background-color: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div style="width: 600px; margin: auto;">
+    <table class="table-style cell-style input-style dropdown-style thead-style" id="table1">
+      <tr>
+        <th>Room
+        </th>
+        <th>Contents
+        </th>
+        <th>Guests
+        </th>
+        <th>Type
+        </th>
+        <th>Select
+        </th>
+      </tr>
+      <tr class="row-selected">
+        <td>1
+        </td>
+        <td>3S
+        </td>
+        <td>
+          <input type="number" value="4" min="0" max="6">
+        </td>
+        <td>
+          <select name="rmtypefor_1" onChange=changedRoomType(this);>
+            <option value="1">Single
+            </option>
+            <option value="2" selected>Double
+            </option>
+            <option value="3">Twin
+            </option>
+            <option value="4">Triple
+            </option>
+            <option value="5">Quadruple
+            </option>
+            <option value="6">Family
+            </option>
+            <option value="7">Girls
+            </option>
+            <option value="8">Boys
+            </option>
+          </select>
+        </td>
+        <td>
+          <input type="checkbox" name="chkbox[]" value="1" checked onClick=toggleRow(this);>
+        </td>
+      </tr>
+      <tr>
+        <td>2
+        </td>
+        <td>4BK
+        </td>
+        <td>
+          <input type="number" value="4" min="0" max="6">
+        </td>
+        <!-- rmtype_2 = the name of the property for the room type selected for room number 2. The value associated with rmtypefor_2 will be the room type selected.(1..8) -->
+        <td>
+          <select name="rmtypefor_2" onChange=changedRoomType(this);>
+            <option value="1">Single
+            </option>
+            <option value="2">Double
+            </option>
+            <option value="3">Twin
+            </option>
+            <option value="4">Triple
+            </option>
+            <option value='5' selected>Quadruple
+            </option>
+            <option value="6">Family
+            </option>
+            <option value="7">Girls
+            </option>
+            <option value="8">Boys
+            </option>
+          </select>
+        </td>
+        <td>
+          <input type="checkbox" name="chkbox[]" value="2" onClick=toggleRow(this);>
+        </td>
+      </tr>
+      <tr class="row-selected">
+        <td>3
+        </td>
+        <td>Twin
+        </td>
+        <td>
+          <input type="number" value="2" min="0" max="6">
+        </td>
+        <td>
+          <select name="rmtypefor_3" onChange=changedRoomType(this);>
+            <option value="1">Single
+            </option>
+            <option value="2">Double
+            </option>
+            <option value="3" selected>Twin
+            </option>
+            <option value="4">Triple
+            </option>
+            <option value='5'>Quadruple
+            </option>
+            <option value="6">Family
+            </option>
+            <option value="7">Girls
+            </option>
+            <option value="8">Boys
+            </option>
+          </select>
+        </td>
+        <td>
+          <input type="checkbox" name="chkbox[]" value="3" checked onClick=toggleRow(this);>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script>
+    /*---------------------------------------------------
+ The user clicked on the checkbox. Toggle the row on or off.
+ This is done by either adding or removing the class name
+file:///C:/Users/Student/Desktop/room.htm view-source:file:///C:/Users/Student/Desktop/room.htm
+1 of 2 22/11/2017, 13:03142 'row-selected' from the TR element that the checkbox is within.
+ */
+    function toggleRow(v) {
+      v['offsetParent']['parentNode']['className'] = (v['checked'] == true) ? 'row-selected' : '';
+      return false;
+    }
+    /*--------------------------------------------------
+. The user selected a different room type from the dropdown list.
+ Infer the number of guests for this room based on the room type the user selected
+ from the drop-down list.
+ Then change the value in the 'Guests' cell to that inferred value.
+ 2. Look at the number of bed places in the room. If the number of guests is greater
+ than the number of bed places then reduce the number of guests down to the maximum permitted
+ guests for that room in order to fit them into those bed places.
+ */
+    function changedRoomType(v) {
+      //console.log(v);
+      let maxCapList = {
+        'DB': 2,
+        'DB/S': 2,
+        'Twin': 2,
+        '3S': 3,
+        'DB/2BK': 4,
+        '2S/2BK': 4,
+        '4BK': 4,
+      };
+      let i = parseInt(v['value'], 10);
+      //1..8
+      let inferredArr = [1, 2, 2, 3, 4, 4, 4, 4];
+      v['offsetParent']['parentNode']['children'][2]['children'][0]['value'] = inferredArr[i - 1];
+      let bedKey = v['offsetParent']['parentNode']['children'][1]['textContent'];
+      let maxCap = maxCapList[bedKey];
+      if (inferredArr[i - 1] > maxCap) {
+        v['offsetParent']['parentNode']['children'][2]['children'][0]['value'] = maxCap;
+      }
+      return false;
+    }
+    //------------------------------------------------------------------------------------
+  </script>
+</body>
+</html> 
